@@ -12,7 +12,7 @@ module.exports = ProjectView =
     # a CompositeDisposable
     @subscriptions = new CompositeDisposable
     atom.packages.activatePackage('tree-view').then (treeViewPkg) =>
-      @treeView = treeViewPkg.mainModule.treeView
+      @treeView = treeViewPkg.mainModule.createView()
       # Bind against events which are causing an update of the tree view
       @subscribeUpdateEvents()
       # Initally update the root names
