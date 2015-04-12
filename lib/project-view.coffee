@@ -16,12 +16,16 @@ module.exports = ProjectView =
       # Bind against events which are causing an update of the tree view
       @subscribeUpdateEvents()
       # Initally update the root names
-      @updateRoots @treeView.roots
+      @updateRoots(@treeView.roots)
     .catch (error) ->
       console.error error, error.stack
 
   deactivate: ->
     @subscriptions.dispose()
+    if @treeView?
+      @clearRoots(@treeView.roots)
+    @subscriptions = null
+    @treeView = null
 
   subscribeUpdateEvents: ->
     @subscriptions.add atom.project.onDidChangePaths =>
@@ -47,6 +51,13 @@ module.exports = ProjectView =
         root.header.appendChild(directoryPath)
       .catch (error) ->
         console.error error, error.stack
+
+  clearRoots: (roots) ->
+    for root in roots
+      root.directoryName.textContent = root.directoryName.dataset.name
+      root.directoryName.classList.remove('project-view')
+      directoryPath = root.header.querySelector('.project-view-path')
+      root.header.removeChild(directoryPath)
 
   getProjectName: (root) ->
     return new Promise (resolve, reject) ->
