@@ -1,7 +1,6 @@
 {CompositeDisposable} = require 'atom'
 fs = require 'fs-plus'
 path = require 'path'
-require 'core-js/es6/string'
 
 module.exports = ProjectView =
   subscriptions: null
@@ -93,7 +92,7 @@ module.exports = ProjectView =
     # Shorten root path if possible
     userHome = fs.getHomeDirectory()
     normRootPath = path.normalize(rootPath)
-    if normRootPath.startsWith(userHome)
+    if normRootPath.indexOf(userHome) is 0
       # Use also tilde in case of Windows as synonym for the home folder
       '~' + normRootPath.substring(userHome.length)
     else
