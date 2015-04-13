@@ -1,3 +1,13 @@
+## v0.1.2 (2015-04-13)
+
+## :bug: Bug Fixes
+- Gracefully deactivate package (#2)
+- Use `fs-plus` to get the home directory
+
+## :racehorse: Performances
+- Remove core-js dependency for faster startup
+
+
 ## v0.1.1 (2015-04-07)
 
 ## :bug: Bug Fixes
