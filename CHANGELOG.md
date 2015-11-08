@@ -1,13 +1,13 @@
 # v0.2.0 (2015-11-08)
 
 ## Features
-- Add support for Composer (thanks to @JasonMiesionczek, [#7](https://github.com/subesokun/atom-tree-view-git-status/issues/7))
+- Add support for Composer (thanks to @JasonMiesionczek, [#7](https://github.com/subesokun/atom-project-view/issues/7))
 
 
 # v0.1.2 (2015-04-13)
 
 ## :bug: Bug Fixes
-- Gracefully deactivate package ([#2](https://github.com/subesokun/atom-tree-view-git-status/issues/2))
+- Gracefully deactivate package ([#2](https://github.com/subesokun/atom-project-view/issues/2))
 - Use `fs-plus` to get the home directory
 
 ## :racehorse: Performances
