@@ -1,10 +1,10 @@
-## v0.2.0 (2015-11-08)
+# v0.2.0 (2015-11-08)
 
 ## Features
 - Add support for Composer (thanks to @JasonMiesionczek, #7)
 
 
-## v0.1.2 (2015-04-13)
+# v0.1.2 (2015-04-13)
 
 ## :bug: Bug Fixes
 - Gracefully deactivate package (#2)
@@ -14,11 +14,11 @@
 - Remove core-js dependency for faster startup
 
 
-## v0.1.1 (2015-04-07)
+# v0.1.1 (2015-04-07)
 
 ## :bug: Bug Fixes
 - Ensure that the treeView is created before referencing it
 
 
-## v0.1.0 (2015-04-06)
+# v0.1.0 (2015-04-06)
 :sparkles: First release of `project-view` with support for npm and bower package files
