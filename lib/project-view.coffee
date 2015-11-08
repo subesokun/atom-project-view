@@ -71,6 +71,10 @@ module.exports = ProjectView =
         pkgFile = path.join root.getPath(), '.bower.json'
         return @getPropertyFromPackageJson(pkgFile, 'name').then (value) ->
           {root: root, name: value}
+      else if files.indexOf('composer.json') isnt -1
+        pkgFile = path.join root.getPath(), 'composer.json'
+        return @getPropertyFromPackageJson(pkgFile, 'name').then (value) ->
+          {root: root, name: value}
       else
         {root: root, name: null}
 
