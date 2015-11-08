@@ -1,3 +1,9 @@
+## v0.2.0 (2015-11-08)
+
+## Features
+- Add support for Composer (thanks to @JasonMiesionczek, #7)
+
+
 ## v0.1.2 (2015-04-13)
 
 ## :bug: Bug Fixes

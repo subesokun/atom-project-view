@@ -17,6 +17,7 @@ apm install project-view
 * Supported files to retrieve the project name (ordered by priority):
  * `package.json` (npm-like)
  * `.bower.json` (bower)
+ * `composer.json` (Composer)
 
 ### Contributing
 
