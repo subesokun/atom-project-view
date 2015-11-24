@@ -3,6 +3,11 @@ fs = require 'fs-plus'
 path = require 'path'
 
 module.exports = ProjectView =
+  config:
+      displayPath:
+        type: 'boolean'
+        default: true,
+        description: 'Show the project path after project name in tree-view root.'
   subscriptions: null
   treeView: null
 
@@ -37,6 +42,8 @@ module.exports = ProjectView =
       @updateRoots(@treeView.roots) if atom.config.get('tree-view.hideIgnoredNames')
     @subscriptions.add atom.config.onDidChange 'tree-view.sortFoldersBeforeFiles', =>
       @updateRoots @treeView.roots
+    @subscriptions.add atom.config.onDidChange 'project-view.displayPath', =>
+      @updateRoots @treeView.roots
 
   updateRoots: (roots) ->
     for root in roots
@@ -44,10 +51,14 @@ module.exports = ProjectView =
         if name
           root.directoryName.textContent = name
           root.directoryName.classList.add('project-view')
-        directoryPath = document.createElement('span')
-        directoryPath.classList.add('name','project-view-path','status-ignored')
-        directoryPath.textContent = '(' + @shortenRootPath(root.directory.path) + ')'
-        root.header.appendChild(directoryPath)
+        if !root.directoryPath
+          root.directoryPath = document.createElement('span')
+          root.header.appendChild(root.directoryPath)
+        root.directoryPath.classList.add('name','project-view-path','status-ignored')
+        if atom.config.get 'project-view.displayPath'
+          root.directoryPath.textContent = '(' + @shortenRootPath(root.directory.path) + ')'
+        else
+          root.directoryPath.textContent = ''
       .catch (error) ->
         console.error error, error.stack
 
