@@ -51,17 +51,14 @@ module.exports = ProjectView =
         if name
           root.directoryName.textContent = name
           root.directoryName.classList.add('project-view')
-
         if !root.directoryPath
-            root.directoryPath = document.createElement('span')
-            root.header.appendChild(root.directoryPath)
-
+          root.directoryPath = document.createElement('span')
+          root.header.appendChild(root.directoryPath)
         root.directoryPath.classList.add('name','project-view-path','status-ignored')
         if atom.config.get 'project-view.displayPath'
-            root.directoryPath.textContent = '(' + @shortenRootPath(root.directory.path) + ')'
+          root.directoryPath.textContent = '(' + @shortenRootPath(root.directory.path) + ')'
         else
-            root.directoryPath.textContent = ''
-
+          root.directoryPath.textContent = ''
       .catch (error) ->
         console.error error, error.stack
 

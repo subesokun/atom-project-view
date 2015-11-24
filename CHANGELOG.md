@@ -1,3 +1,8 @@
+# v0.3.0 (2015-11-24)
+
+## Features
+- Added setting to show or not the project path (thanks to @rodrigopmatias, [#9](https://github.com/subesokun/atom-project-view/issues/9))
+
 # v0.2.0 (2015-11-08)
 
 ## Features
