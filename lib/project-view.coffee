@@ -102,7 +102,7 @@ module.exports = ProjectView =
           pkgData = JSON.parse(data)
           if pkgData[property]
             scope = ProjectView
-            w = new watch.Watch(path, 2500, ((self) -> scope.updateProjectName path ), scope)
+            w = new watch.WatchFile(path, 1500, ((self) -> scope.updateProjectName path ), scope)
             w.start()
             resolve(pkgData[property])
           else

@@ -1,6 +1,6 @@
 fs = require 'fs'
 
-class Watch
+class WatchFile
 
   constructor: (@path, @interval, @observer, @scope) ->
     @dead = false
@@ -26,4 +26,4 @@ class Watch
 
 
 module.exports =
-  Watch: Watch
+  WatchFile: WatchFile
