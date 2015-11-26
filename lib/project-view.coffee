@@ -1,13 +1,14 @@
 {CompositeDisposable} = require 'atom'
 fs = require 'fs-plus'
 path = require 'path'
+watch = require './watch'
 
 module.exports = ProjectView =
   config:
-      displayPath:
-        type: 'boolean'
-        default: true,
-        description: 'Show the project path after project name in tree-view root.'
+    displayPath:
+      type: 'boolean'
+      default: true
+      description: 'Show the project path after project name in tree-view root.'
   subscriptions: null
   treeView: null
 
@@ -89,6 +90,9 @@ module.exports = ProjectView =
       else
         {root: root, name: null}
 
+  updateProjectName: (path) ->
+    @updateRoots(@treeView.roots)
+
   getPropertyFromPackageJson: (path, property) ->
     return new Promise (resolve, reject) ->
       fs.readFile path, 'utf8', (error, data) ->
@@ -97,6 +101,9 @@ module.exports = ProjectView =
         try
           pkgData = JSON.parse(data)
           if pkgData[property]
+            scope = ProjectView
+            w = new watch.Watch(path, 2500, ((self) -> scope.updateProjectName path ), scope)
+            w.start()
             resolve(pkgData[property])
           else
             resolve(null)
