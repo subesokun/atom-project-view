@@ -12,7 +12,7 @@ class WatchFile
       setTimeout (-> me._target me), me.interval
 
   start: ->
-    me = this
+    me = @
     setTimeout (-> me._target me), 1
 
   run: ->
