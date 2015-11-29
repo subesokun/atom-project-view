@@ -101,7 +101,7 @@ module.exports = ProjectView =
         try
           pkgData = JSON.parse(data)
           if pkgData[property]
-            fs.watchFile(
+            fs.watch(
               path,
               (event, stats) ->
                 me.updateProjectName(path)
