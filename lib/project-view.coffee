@@ -102,10 +102,11 @@ module.exports = ProjectView =
           pkgData = JSON.parse(data)
           if pkgData[property]
             fs.watchFile(
-                path,
-                (event, stats) ->
-                    me.updateProjectName(path)
+              path,
+              (event, stats) ->
+                me.updateProjectName(path)
             )
+
             resolve(pkgData[property])
           else
             resolve(null)
