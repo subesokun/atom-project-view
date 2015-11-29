@@ -4,12 +4,13 @@ path = require 'path'
 
 module.exports = ProjectView =
   config:
-      displayPath:
-        type: 'boolean'
-        default: true,
-        description: 'Show the project path after project name in tree-view root.'
+    displayPath:
+      type: 'boolean'
+      default: true
+      description: 'Show the project path after project name in tree-view root.'
   subscriptions: null
   treeView: null
+  tracked: []
 
   activate: ->
     # Events subscribed to in atom's system can be easily cleaned up with
@@ -89,7 +90,11 @@ module.exports = ProjectView =
       else
         {root: root, name: null}
 
+  updateProjectName: (path) ->
+    @updateRoots(@treeView.roots)
+
   getPropertyFromPackageJson: (path, property) ->
+    me = @
     return new Promise (resolve, reject) ->
       fs.readFile path, 'utf8', (error, data) ->
         if error
@@ -97,6 +102,13 @@ module.exports = ProjectView =
         try
           pkgData = JSON.parse(data)
           if pkgData[property]
+            if path not in me.tracked
+              me.tracked.push path
+              fs.watch(
+                path,
+                (event, stats) ->
+                  me.updateProjectName(path)
+              )
             resolve(pkgData[property])
           else
             resolve(null)
