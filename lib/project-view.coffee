@@ -10,6 +10,7 @@ module.exports = ProjectView =
       description: 'Show the project path after project name in tree-view root.'
   subscriptions: null
   treeView: null
+  tracked: []
 
   activate: ->
     # Events subscribed to in atom's system can be easily cleaned up with
@@ -101,12 +102,13 @@ module.exports = ProjectView =
         try
           pkgData = JSON.parse(data)
           if pkgData[property]
-            fs.watch(
-              path,
-              (event, stats) ->
-                me.updateProjectName(path)
-            )
-
+            if path not in me.tracked
+              me.tracked.push path
+              fs.watch(
+                path,
+                (event, stats) ->
+                  me.updateProjectName(path)
+              )
             resolve(pkgData[property])
           else
             resolve(null)
