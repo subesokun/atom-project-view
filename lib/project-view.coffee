@@ -1,7 +1,6 @@
 {CompositeDisposable} = require 'atom'
 fs = require 'fs-plus'
 path = require 'path'
-watch = require './watch'
 
 module.exports = ProjectView =
   config:
@@ -94,6 +93,7 @@ module.exports = ProjectView =
     @updateRoots(@treeView.roots)
 
   getPropertyFromPackageJson: (path, property) ->
+    me = @
     return new Promise (resolve, reject) ->
       fs.readFile path, 'utf8', (error, data) ->
         if error
@@ -101,9 +101,11 @@ module.exports = ProjectView =
         try
           pkgData = JSON.parse(data)
           if pkgData[property]
-            scope = ProjectView
-            w = new watch.WatchFile(path, 1500, ((self) -> scope.updateProjectName path ), scope)
-            w.start()
+            fs.watchFile(
+                path,
+                (event, stats) ->
+                    me.updateProjectName(path)
+            )
             resolve(pkgData[property])
           else
             resolve(null)
