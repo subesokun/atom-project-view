@@ -36,6 +36,7 @@ class Project
       fs.readdir rootPath, (error, files) ->
         resolve(files)
     .then (files) =>
+      return if not files?
       if files.indexOf('package.json') isnt -1
         pkgFile = path.join rootPath, 'package.json'
         return @getPropertyFromPackageJson(pkgFile, 'name')

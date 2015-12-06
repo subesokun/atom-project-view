@@ -100,9 +100,12 @@ module.exports = ProjectView =
     @projectMap = {}
 
   updateProjectRoot: (root, name) ->
-    if name
+    if name?
       root.directoryName.textContent = name
       root.directoryName.classList.add('project-view')
+    else
+      root.directoryName.textContent = root.directoryName.dataset.name
+      root.directoryName.classList.remove('project-view')
     if not root.directoryPath?
       root.directoryPath = document.createElement('span')
       root.header.appendChild(root.directoryPath)
