@@ -1,3 +1,13 @@
+# v0.4.0 (2015-12-12)
+
+## Features
+- Add support for live update of the project name (thanks for support to @rodrigopmatias, [#1](https://github.com/subesokun/atom-project-view/issues/1))
+- Rework package activation to not forcefully load the tree-view ([#8](https://github.com/subesokun/atom-project-view/issues/8))
+
+## :bug: Bug Fixes
+- Fix issue with empty root directories ([#11](https://github.com/subesokun/atom-project-view/issues/11))
+
+
 # v0.3.0 (2015-11-24)
 
 ## Features
