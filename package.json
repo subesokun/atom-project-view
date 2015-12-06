@@ -1,15 +1,16 @@
 {
   "name": "project-view",
   "main": "./lib/project-view",
-  "version": "0.3.0",
-  "description": "Shows project details in the Atom tree-view",
+  "version": "0.4.0",
+  "description": "Show project details in the Atom tree-view",
   "repository": "https://github.com/subesokun/atom-project-view",
   "license": "MIT",
   "engines": {
     "atom": ">=0.174.0 <2.0.0"
   },
   "dependencies": {
-    "fs-plus": "^2.7.0"
+    "fs-plus": "^2.7.0",
+    "pathwatcher": "^6.3.0"
   },
   "keywords": [
     "project",

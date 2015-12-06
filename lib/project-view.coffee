@@ -1,107 +1,116 @@
 {CompositeDisposable} = require 'atom'
 fs = require 'fs-plus'
 path = require 'path'
+Project = require './project'
+
 
 module.exports = ProjectView =
   config:
-      displayPath:
-        type: 'boolean'
-        default: true,
-        description: 'Show the project path after project name in tree-view root.'
-  subscriptions: null
-  treeView: null
+    displayPath:
+      type: 'boolean'
+      default: true
+      description: 'Show the project path after project name in tree-view root.'
 
   activate: ->
+    @projectMap = {}
     # Events subscribed to in atom's system can be easily cleaned up with
     # a CompositeDisposable
     @subscriptions = new CompositeDisposable
-    atom.packages.activatePackage('tree-view').then (treeViewPkg) =>
-      @treeView = treeViewPkg.mainModule.createView()
-      # Bind against events which are causing an update of the tree view
-      @subscribeUpdateEvents()
-      # Initally update the root names
-      @updateRoots(@treeView.roots)
-    .catch (error) ->
-      console.error error, error.stack
+    @subscriptions.add atom.packages.onDidActivateInitialPackages =>
+      @initProjectView()
+    @initProjectView()
+
+  initProjectView: ->
+    if not @treeView?
+      if atom.packages.getActivePackage('nuclide-tree-view')?
+        treeViewPkg = atom.packages.getActivePackage('nuclide-tree-view')
+      else if atom.packages.getActivePackage('tree-view')?
+        treeViewPkg = atom.packages.getActivePackage('tree-view')
+      if treeViewPkg?.mainModule?.treeView?
+        @treeView = treeViewPkg.mainModule.treeView
+        # Bind against events which are causing an update of the tree view
+        @subscribeUpdateEvents()
+        # Initally update the root names
+        @updateRoots(@treeView.roots)
 
   deactivate: ->
-    @subscriptions.dispose()
+    @subscriptions?.dispose()
     if @treeView?
-      @clearRoots(@treeView.roots)
+      @clearRoots()
     @subscriptions = null
     @treeView = null
+    @projectMap = null
 
   subscribeUpdateEvents: ->
     @subscriptions.add atom.project.onDidChangePaths =>
-      @updateRoots @treeView.roots
+      @updateRoots()
     @subscriptions.add atom.config.onDidChange 'tree-view.hideVcsIgnoredFiles', =>
-      @updateRoots @treeView.roots
+      @updateRoots()
     @subscriptions.add atom.config.onDidChange 'tree-view.hideIgnoredNames', =>
-      @updateRoots @treeView.roots
+      @updateRoots()
     @subscriptions.add atom.config.onDidChange 'core.ignoredNames', =>
-      @updateRoots(@treeView.roots) if atom.config.get('tree-view.hideIgnoredNames')
+      @updateRoots() if atom.config.get('tree-view.hideIgnoredNames')
     @subscriptions.add atom.config.onDidChange 'tree-view.sortFoldersBeforeFiles', =>
-      @updateRoots @treeView.roots
+      @updateRoots()
     @subscriptions.add atom.config.onDidChange 'project-view.displayPath', =>
-      @updateRoots @treeView.roots
+      @updateRoots()
 
-  updateRoots: (roots) ->
+  updateRoots: ->
+    roots = @treeView.roots
     for root in roots
-      @getProjectName(root).then ({root, name}) =>
-        if name
-          root.directoryName.textContent = name
-          root.directoryName.classList.add('project-view')
-        if !root.directoryPath
-          root.directoryPath = document.createElement('span')
-          root.header.appendChild(root.directoryPath)
-        root.directoryPath.classList.add('name','project-view-path','status-ignored')
-        if atom.config.get 'project-view.displayPath'
-          root.directoryPath.textContent = '(' + @shortenRootPath(root.directory.path) + ')'
-        else
-          root.directoryPath.textContent = ''
+      rootPath = root.getPath()
+      project = @projectMap[rootPath]
+      if not proj?
+        project = new Project(root)
+        @projectMap[rootPath] = project
+        # Bind for name changes and activate watcher
+        project.onDidChange 'name', ({root, name}) =>
+          @updateProjectRoot(root, name)
+        project.watch()
+      # Get the project name and update the tree view
+      project.findProjectName().then ({root, name}) =>
+        @updateProjectRoot(root, name)
       .catch (error) ->
-        console.error error, error.stack
+        console.error(error, error.stack)
+    # Clean up removed projects
+    projectsToRemove = []
+    for rootPath, project of @projectMap
+      if not @findRootByPath(rootPath)?
+        projectsToRemove.push(rootPath)
+    for rootPath in projectsToRemove
+      @projectMap[rootPath]?.destory()
+      delete @projectMap[rootPath]
 
-  clearRoots: (roots) ->
+  findRootByPath: (rootPath) ->
+    for root in @treeView.roots
+      if rootPath is root.getPath()
+        return rootPath
+
+  clearRoots: ->
+    roots = @treeView.roots
     for root in roots
+      project = @projectMap[root.getPath()]
+      if project?
+        project.destory()
       root.directoryName.textContent = root.directoryName.dataset.name
       root.directoryName.classList.remove('project-view')
       directoryPath = root.header.querySelector('.project-view-path')
-      root.header.removeChild(directoryPath)
+      root.header.removeChild(directoryPath) if directoryPath?
+      delete root.directoryPath
+    @projectMap = {}
 
-  getProjectName: (root) ->
-    return new Promise (resolve, reject) ->
-      fs.readdir root.getPath(), (error, files) ->
-        resolve(files)
-    .then (files) =>
-      if files.indexOf('package.json') isnt -1
-        pkgFile = path.join root.getPath(), 'package.json'
-        return @getPropertyFromPackageJson(pkgFile, 'name').then (value) ->
-          {root: root, name: value}
-      else if files.indexOf('.bower.json') isnt -1
-        pkgFile = path.join root.getPath(), '.bower.json'
-        return @getPropertyFromPackageJson(pkgFile, 'name').then (value) ->
-          {root: root, name: value}
-      else if files.indexOf('composer.json') isnt -1
-        pkgFile = path.join root.getPath(), 'composer.json'
-        return @getPropertyFromPackageJson(pkgFile, 'name').then (value) ->
-          {root: root, name: value}
-      else
-        {root: root, name: null}
-
-  getPropertyFromPackageJson: (path, property) ->
-    return new Promise (resolve, reject) ->
-      fs.readFile path, 'utf8', (error, data) ->
-        if error
-          resolve(null)
-        try
-          pkgData = JSON.parse(data)
-          if pkgData[property]
-            resolve(pkgData[property])
-          else
-            resolve(null)
-        catch error
-          resolve(null)
+  updateProjectRoot: (root, name) ->
+    if name
+      root.directoryName.textContent = name
+      root.directoryName.classList.add('project-view')
+    if not root.directoryPath?
+      root.directoryPath = document.createElement('span')
+      root.header.appendChild(root.directoryPath)
+    root.directoryPath.classList.add('name','project-view-path','status-ignored')
+    if atom.config.get 'project-view.displayPath'
+      root.directoryPath.textContent = '(' + @shortenRootPath(root.directory.path) + ')'
+    else
+      root.directoryPath.textContent = ''
 
   shortenRootPath: (rootPath) ->
     # Shorten root path if possible
