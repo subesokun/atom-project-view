@@ -1,8 +1,12 @@
-# project-view package
+# Project View package
 
 Shows project details in the Atom tree-view.
 
+### Screenshots
+
 ![project-view Screenshot](https://github.com/subesokun/atom-project-view/blob/master/screenshot.png?raw=true)
+
+![project-view Screenshot Settings](https://github.com/subesokun/atom-project-view/blob/master/screenshot-settings.png?raw=true)
 
 ### Installation
 
