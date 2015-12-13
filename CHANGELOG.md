@@ -1,3 +1,9 @@
+# v0.4.1 (2015-12-13)
+
+## :bug: Bug Fixes
+- Remove `pathwatcher` due to installation issues on Windows ([3550b1e](https://github.com/subesokun/atom-project-view/commit/3550b1edbe62c70459208ebf52b0f4f934ab89c4))
+
+
 # v0.4.0 (2015-12-12)
 
 ## Features
@@ -12,6 +18,7 @@
 
 ## Features
 - Added setting to show or not the project path (thanks to @rodrigopmatias, [#9](https://github.com/subesokun/atom-project-view/issues/9))
+
 
 # v0.2.0 (2015-11-08)
 
