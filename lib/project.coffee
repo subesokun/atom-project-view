@@ -1,5 +1,4 @@
 {Emitter} = require 'atom'
-PathWatcher = require 'pathwatcher'
 path = require 'path'
 fs = require 'fs-plus'
 
@@ -8,10 +7,12 @@ class Project
   constructor: (@root) ->
     @emitter = new Emitter
     @projectName = null
+    @trackedFile = null
 
   destory: ->
     @unwatch()
     @projectName = null
+    @trackedFile = null
     @emitter?.dispose()
     @emitter = null
 
@@ -23,9 +24,11 @@ class Project
   watch: ->
     if not @watchSubscription?
       try
-        @watchSubscription = PathWatcher.watch @root.getPath(), (eventType, eventPath) =>
-          switch eventType
-            when 'change' then @findProjectName()
+        @watchSubscription = fs.watch @root.getPath(), (event, filename) =>
+          if event is 'change'
+            @findProjectName() if filename is @trackedFile
+          else
+            @findProjectName()
 
   onDidChange: (eventType, callback) ->
     @emitter.on eventType, callback
@@ -39,13 +42,19 @@ class Project
       return if not files?
       if files.indexOf('package.json') isnt -1
         pkgFile = path.join rootPath, 'package.json'
+        @trackedFile = 'package.json'
         return @getPropertyFromPackageJson(pkgFile, 'name')
       else if files.indexOf('.bower.json') isnt -1
         pkgFile = path.join rootPath, '.bower.json'
+        @trackedFile = '.bower.json'
         return @getPropertyFromPackageJson(pkgFile, 'name')
       else if files.indexOf('composer.json') isnt -1
         pkgFile = path.join rootPath, 'composer.json'
+        @trackedFile = 'composer.json'
         return @getPropertyFromPackageJson(pkgFile, 'name')
+      else
+        @trackedFile = null
+        return
     .then (name) =>
       result = {root: @root, name: name}
       @projectName = name
