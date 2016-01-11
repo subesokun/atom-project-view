@@ -20,6 +20,11 @@ module.exports = ProjectView =
       @initProjectView()
     @initProjectView()
 
+    @subscriptions.add(atom.commands.add('atom-workspace', {
+        'project-view:toggle-path': () ->
+          atom.config.set('project-view.displayPath', !atom.config.get('project-view.displayPath'))
+    }))
+
   initProjectView: ->
     if not @treeView?
       if atom.packages.getActivePackage('nuclide-tree-view')?
