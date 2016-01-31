@@ -21,8 +21,8 @@ module.exports = ProjectView =
     @initProjectView()
 
     @subscriptions.add(atom.commands.add('atom-workspace', {
-        'project-view:toggle-path': () ->
-          atom.config.set('project-view.displayPath', !atom.config.get('project-view.displayPath'))
+      'project-view:toggle-path': ->
+        atom.config.set('project-view.displayPath', !atom.config.get('project-view.displayPath'))
     }))
 
   initProjectView: ->
