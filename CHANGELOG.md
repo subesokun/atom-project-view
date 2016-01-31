@@ -1,4 +1,4 @@
-# v0.5.0 (2015-01-31)
+# v0.5.0 (2016-01-31)
 
 ## Features
 - Add command and keymap binding for toggling the project path (thanks to @rodrigopmatias, [#12](https://github.com/subesokun/atom-project-view/issues/12))
