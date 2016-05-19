@@ -10,6 +10,14 @@ module.exports = ProjectView =
       type: 'boolean'
       default: true
       description: 'Show the project path after project name in tree-view root.'
+    regexMatch:
+        type: 'string'
+        default: ""
+        description: 'Define a custom regex to match the parts in the project path that shall be replaced.'
+    regexSubStr:
+        type: 'string'
+        default: "$&"
+        description: 'If the regex matches, then substitute all matches with this string.'
 
   activate: ->
     @projectMap = {}
@@ -31,6 +39,7 @@ module.exports = ProjectView =
         treeViewPkg = atom.packages.getActivePackage('nuclide-tree-view')
       else if atom.packages.getActivePackage('tree-view')?
         treeViewPkg = atom.packages.getActivePackage('tree-view')
+      @regex = new RegExp(atom.config.get('project-view.regexMatch'))
       if treeViewPkg?.mainModule?.treeView?
         @treeView = treeViewPkg.mainModule.treeView
         # Bind against events which are causing an update of the tree view
@@ -58,6 +67,11 @@ module.exports = ProjectView =
     @subscriptions.add atom.config.onDidChange 'tree-view.sortFoldersBeforeFiles', =>
       @updateRoots()
     @subscriptions.add atom.config.onDidChange 'project-view.displayPath', =>
+      @updateRoots()
+    @subscriptions.add atom.config.onDidChange 'project-view.regexMatch', =>
+      @regex = new RegExp(atom.config.get('project-view.regexMatch'))
+      @updateRoots()
+    @subscriptions.add atom.config.onDidChange 'project-view.regexSubStr', =>
       @updateRoots()
 
   updateRoots: ->
@@ -124,8 +138,10 @@ module.exports = ProjectView =
     # Shorten root path if possible
     userHome = fs.getHomeDirectory()
     normRootPath = path.normalize(rootPath)
-    if normRootPath.indexOf(userHome) is 0
-      # Use also tilde in case of Windows as synonym for the home folder
+    if atom.config.get 'project-view.regexMatch'
+      normRootPath.replace(@regex),
+                           atom.config.get('project-view.regexSubStr'))
+    else if normRootPath.indexOf(userHome) is 0      # Use also tilde in case of Windows as synonym for the home folder
       '~' + normRootPath.substring(userHome.length)
     else
       rootPath
