@@ -10,6 +10,14 @@ module.exports = ProjectView =
       type: 'boolean'
       default: true
       description: 'Show the project path after project name in tree-view root.'
+    regexMatch:
+        type: 'string'
+        default: ""
+        description: 'Use a custom regex to transform the path'
+    rewrite:
+        type: 'string'
+        default: "$&"
+        description: 'If regex matches, then rewrite the path using the patten.'
 
   activate: ->
     @projectMap = {}
@@ -37,6 +45,7 @@ module.exports = ProjectView =
         @subscribeUpdateEvents()
         # Initally update the root names
         @updateRoots(@treeView.roots)
+      @regex = new RegExp(atom.config.get('project-view.regexMatch')
 
   deactivate: ->
     @subscriptions?.dispose()
@@ -58,6 +67,11 @@ module.exports = ProjectView =
     @subscriptions.add atom.config.onDidChange 'tree-view.sortFoldersBeforeFiles', =>
       @updateRoots()
     @subscriptions.add atom.config.onDidChange 'project-view.displayPath', =>
+      @updateRoots()
+    @subscriptions.add atom.config.onDidChange 'project-view.regexMatch', =>
+      @regex = new RegExp(atom.config.get('project-view.regexMatch')
+      @updateRoots()
+    @subscriptions.add atom.config.onDidChange 'project-view.rewrite', =>
       @updateRoots()
 
   updateRoots: ->
@@ -124,8 +138,10 @@ module.exports = ProjectView =
     # Shorten root path if possible
     userHome = fs.getHomeDirectory()
     normRootPath = path.normalize(rootPath)
-    if normRootPath.indexOf(userHome) is 0
-      # Use also tilde in case of Windows as synonym for the home folder
+    if atom.config.get 'project-view.regexMatch'
+      normRootPath.replace(@regex),
+                           atom.config.get('project-view.rewrite'))
+    else if normRootPath.indexOf(userHome) is 0      # Use also tilde in case of Windows as synonym for the home folder
       '~' + normRootPath.substring(userHome.length)
     else
       rootPath
