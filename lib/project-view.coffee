@@ -10,6 +10,14 @@ module.exports = ProjectView =
       type: 'boolean'
       default: true
       description: 'Show the project path after project name in tree-view root.'
+    regexMatch:
+      type: 'string'
+      default: ''
+      description: 'Define a custom regex to match the parts in the project path that shall be replaced.'
+    regexSubStr:
+      type: 'string'
+      default: '$&'
+      description: 'If the regex matches, then substitute all matches with this string.'
 
   activate: ->
     @projectMap = {}
@@ -31,6 +39,11 @@ module.exports = ProjectView =
         treeViewPkg = atom.packages.getActivePackage('nuclide-tree-view')
       else if atom.packages.getActivePackage('tree-view')?
         treeViewPkg = atom.packages.getActivePackage('tree-view')
+
+      @regexSubStr = atom.config.get('project-view.regexSubStr')
+      @regexMatch = atom.config.get('project-view.regexMatch')
+      @regex = new RegExp @regexMatch
+
       if treeViewPkg?.mainModule?.treeView?
         @treeView = treeViewPkg.mainModule.treeView
         # Bind against events which are causing an update of the tree view
@@ -45,6 +58,10 @@ module.exports = ProjectView =
     @subscriptions = null
     @treeView = null
     @projectMap = null
+    @regex = null
+    @regexSubStr = ''
+    @regexMatch = ''
+
 
   subscribeUpdateEvents: ->
     @subscriptions.add atom.project.onDidChangePaths =>
@@ -58,6 +75,13 @@ module.exports = ProjectView =
     @subscriptions.add atom.config.onDidChange 'tree-view.sortFoldersBeforeFiles', =>
       @updateRoots()
     @subscriptions.add atom.config.onDidChange 'project-view.displayPath', =>
+      @updateRoots()
+    @subscriptions.add atom.config.onDidChange 'project-view.regexMatch', =>
+      @regexMatch = atom.config.get('project-view.regexMatch')
+      @regex = new RegExp @regexMatch
+      @updateRoots()
+    @subscriptions.add atom.config.onDidChange 'project-view.regexSubStr', =>
+      @regexSubStr = atom.config.get('project-view.regexSubStr')
       @updateRoots()
 
   updateRoots: ->
@@ -124,8 +148,13 @@ module.exports = ProjectView =
     # Shorten root path if possible
     userHome = fs.getHomeDirectory()
     normRootPath = path.normalize(rootPath)
+
+    if @regexMatch isnt ''
+      replacedPath = normRootPath.replace(@regex, @regexSubStr)
+      return replacedPath if replacedPath isnt normRootPath
+
     if normRootPath.indexOf(userHome) is 0
       # Use also tilde in case of Windows as synonym for the home folder
-      '~' + normRootPath.substring(userHome.length)
+      return '~' + normRootPath.substring(userHome.length)
     else
-      rootPath
+      return normRootPath
