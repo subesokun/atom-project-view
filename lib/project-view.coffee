@@ -39,13 +39,13 @@ module.exports = ProjectView =
         treeViewPkg = atom.packages.getActivePackage('nuclide-tree-view')
       else if atom.packages.getActivePackage('tree-view')?
         treeViewPkg = atom.packages.getActivePackage('tree-view')
+      @regex = new RegExp(atom.config.get('project-view.regexMatch'))
       if treeViewPkg?.mainModule?.treeView?
         @treeView = treeViewPkg.mainModule.treeView
         # Bind against events which are causing an update of the tree view
         @subscribeUpdateEvents()
         # Initally update the root names
         @updateRoots(@treeView.roots)
-      @regex = new RegExp(atom.config.get('project-view.regexMatch'))
 
   deactivate: ->
     @subscriptions?.dispose()
