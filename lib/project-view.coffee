@@ -13,11 +13,11 @@ module.exports = ProjectView =
     regexMatch:
         type: 'string'
         default: ""
-        description: 'Use a custom regex to transform the path'
-    rewrite:
+        description: 'Define a custom regex to match the parts in the project path that shall be replaced.'
+    regexSubStr:
         type: 'string'
         default: "$&"
-        description: 'If regex matches, then rewrite the path using the patten.'
+        description: 'If the regex matches, then substitute all matches with this string.'
 
   activate: ->
     @projectMap = {}
@@ -45,7 +45,7 @@ module.exports = ProjectView =
         @subscribeUpdateEvents()
         # Initally update the root names
         @updateRoots(@treeView.roots)
-      @regex = new RegExp(atom.config.get('project-view.regexMatch')
+      @regex = new RegExp(atom.config.get('project-view.regexMatch'))
 
   deactivate: ->
     @subscriptions?.dispose()
@@ -69,9 +69,9 @@ module.exports = ProjectView =
     @subscriptions.add atom.config.onDidChange 'project-view.displayPath', =>
       @updateRoots()
     @subscriptions.add atom.config.onDidChange 'project-view.regexMatch', =>
-      @regex = new RegExp(atom.config.get('project-view.regexMatch')
+      @regex = new RegExp(atom.config.get('project-view.regexMatch'))
       @updateRoots()
-    @subscriptions.add atom.config.onDidChange 'project-view.rewrite', =>
+    @subscriptions.add atom.config.onDidChange 'project-view.regexSubStr', =>
       @updateRoots()
 
   updateRoots: ->
@@ -140,7 +140,7 @@ module.exports = ProjectView =
     normRootPath = path.normalize(rootPath)
     if atom.config.get 'project-view.regexMatch'
       normRootPath.replace(@regex),
-                           atom.config.get('project-view.rewrite'))
+                           atom.config.get('project-view.regexSubStr'))
     else if normRootPath.indexOf(userHome) is 0      # Use also tilde in case of Windows as synonym for the home folder
       '~' + normRootPath.substring(userHome.length)
     else
