@@ -23,6 +23,12 @@ apm install project-view
  * `.bower.json` (bower)
  * `composer.json` (Composer)
 
+#### Customize the project path via regex
+
+Via a regex you can easily shorten the project path or show other additional information that are useful for you. Furthermore you could also obfuscate the project path for more privacy.
+
+![project-view Screenshot Project Path Regex](https://github.com/subesokun/atom-project-view/blob/master/screenshot-path-regex.png?raw=true)
+
 ### Contributing
 
 The project-view package tries to follow the [Atom contribution guidelines](https://atom.io/docs/latest/contributing).
