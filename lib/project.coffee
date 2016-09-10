@@ -44,9 +44,9 @@ class Project
         pkgFile = path.join rootPath, 'package.json'
         @trackedFile = 'package.json'
         return @getPropertyFromPackageJson(pkgFile, 'name')
-      else if files.indexOf('.bower.json') isnt -1
-        pkgFile = path.join rootPath, '.bower.json'
-        @trackedFile = '.bower.json'
+      else if files.indexOf('bower.json') isnt -1
+        pkgFile = path.join rootPath, 'bower.json'
+        @trackedFile = 'bower.json'
         return @getPropertyFromPackageJson(pkgFile, 'name')
       else if files.indexOf('composer.json') isnt -1
         pkgFile = path.join rootPath, 'composer.json'
