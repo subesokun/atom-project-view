@@ -107,7 +107,7 @@ module.exports = ProjectView =
       if not @findRootByPath(rootPath)?
         projectsToRemove.push(rootPath)
     for rootPath in projectsToRemove
-      @projectMap[rootPath]?.destory()
+      @projectMap[rootPath]?.destroy()
       delete @projectMap[rootPath]
 
   findRootByPath: (rootPath) ->
@@ -120,7 +120,7 @@ module.exports = ProjectView =
     for root in roots
       project = @projectMap[root.getPath()]
       if project?
-        project.destory()
+        project.destroy()
       root.directoryName.textContent = root.directoryName.dataset.name
       root.directoryName.classList.remove('project-view')
       directoryPath = root.header.querySelector('.project-view-path')
