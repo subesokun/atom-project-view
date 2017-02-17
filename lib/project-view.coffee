@@ -89,7 +89,7 @@ module.exports = ProjectView =
     for root in roots
       rootPath = root.getPath()
       project = @projectMap[rootPath]
-      if not proj?
+      if not project?
         project = new Project(root)
         @projectMap[rootPath] = project
         # Bind for name changes and activate watcher
