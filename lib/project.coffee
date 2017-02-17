@@ -9,7 +9,7 @@ class Project
     @projectName = null
     @trackedFile = null
 
-  destory: ->
+  destroy: ->
     @unwatch()
     @projectName = null
     @trackedFile = null
