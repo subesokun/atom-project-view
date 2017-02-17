@@ -1,5 +1,11 @@
 # Project View package
 
+[![Version](https://img.shields.io/apm/v/project-view.svg?style=flat-square)](https://atom.io/packages/project-view)
+[![Downloads](https://img.shields.io/apm/dm/project-view.svg?style=flat-square)](https://atom.io/packages/project-view)
+[![Status Linux & OSX](https://img.shields.io/travis/subesokun/atom-project-view.svg?style=flat-square&label=Linux%20%26%20OSX)](https://travis-ci.org/subesokun/atom-project-view)
+[![Status Windows](https://img.shields.io/appveyor/ci/subesokun/atom-project-view.svg?style=flat-square&label=Windows)](https://ci.appveyor.com/project/subesokun/atom-project-view)
+[![Dependency Status](https://img.shields.io/david/subesokun/atom-project-view.svg?style=flat-square)](https://david-dm.org/subesokun/atom-project-view)
+
 Shows project details in the Atom tree-view.
 
 ### Screenshots
@@ -28,14 +34,6 @@ apm install project-view
 Via a regex you can easily shorten the project path or show other additional information that are useful for you. Furthermore you could also obfuscate the project path for more privacy.
 
 ![project-view Screenshot Project Path Regex](https://github.com/subesokun/atom-project-view/blob/master/screenshot-path-regex.png?raw=true)
-
-### Contributing
-
-The project-view package tries to follow the [Atom contribution guidelines](https://atom.io/docs/latest/contributing).
-
-Especially, the commits should follow the conventions defined in the *Git Commit Messages* section of the contribution guidelines.
-
-[See all contributors](https://github.com/subesokun/atom-project-view/graphs/contributors)
 
 ### License
 
