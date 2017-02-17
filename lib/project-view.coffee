@@ -26,6 +26,11 @@ module.exports = ProjectView =
     @subscriptions = new CompositeDisposable
     @subscriptions.add atom.packages.onDidActivateInitialPackages =>
       @initProjectView()
+    # Workaround for the isse that "onDidActivateInitialPackages" never gets
+    # fired if one or more packages are failing to initialize
+    @activateInterval = setInterval (=>
+        @initProjectView()
+      ), 1000
     @initProjectView()
 
     @subscriptions.add(atom.commands.add('atom-workspace', {
@@ -45,6 +50,7 @@ module.exports = ProjectView =
       @regex = new RegExp @regexMatch
 
       if treeViewPkg?.mainModule?.treeView?
+        clearInterval(@activateInterval)
         @treeView = treeViewPkg.mainModule.treeView
         # Bind against events which are causing an update of the tree view
         @subscribeUpdateEvents()
