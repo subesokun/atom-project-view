@@ -102,6 +102,8 @@ module.exports = ProjectView =
         project.onDidChange 'name', ({root, name}) =>
           @updateProjectRoot(root.getPath(), name)
         project.watch()
+      
+      @updateProjectRoot(root.getPath(), project.projectName) if project.projectName
       # Get the project name and update the tree view
       project.findProjectName().then ({root, name}) =>
         @updateProjectRoot(root.getPath(), name)
