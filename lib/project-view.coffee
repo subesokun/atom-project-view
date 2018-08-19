@@ -102,13 +102,15 @@ module.exports = ProjectView =
         project.onDidChange 'name', ({root, name}) =>
           @updateProjectRoot(root.getPath(), name)
         project.watch()
-      
-      @updateProjectRoot(root.getPath(), project.projectName) if project.projectName
-      # Get the project name and update the tree view
-      project.findProjectName().then ({root, name}) =>
-        @updateProjectRoot(root.getPath(), name)
-      .catch (error) ->
-        console.error(error, error.stack)
+      if project.projectName
+        # Project name has been already cached
+        @updateProjectRoot(rootPath, project.projectName)
+      else
+        # Find the project name as it hasn't been cached yet
+        project.findProjectName().then ({_, name}) =>
+          @updateProjectRoot(rootPath, name)
+        .catch (error) ->
+          console.error(error, error.stack)
     # Clean up removed projects
     projectsToRemove = []
     for rootPath, project of @projectMap
