@@ -100,13 +100,17 @@ module.exports = ProjectView =
         @projectMap[rootPath] = project
         # Bind for name changes and activate watcher
         project.onDidChange 'name', ({root, name}) =>
-          @updateProjectRoot(root, name)
+          @updateProjectRoot(root.getPath(), name)
         project.watch()
-      # Get the project name and update the tree view
-      project.findProjectName().then ({root, name}) =>
-        @updateProjectRoot(root, name)
-      .catch (error) ->
-        console.error(error, error.stack)
+      if project.projectName
+        # Project name has been already cached
+        @updateProjectRoot(rootPath, project.projectName)
+      else
+        # Find the project name as it hasn't been cached yet
+        project.findProjectName().then ({_, name}) =>
+          @updateProjectRoot(rootPath, name)
+        .catch (error) ->
+          console.error(error, error.stack)
     # Clean up removed projects
     projectsToRemove = []
     for rootPath, project of @projectMap
@@ -119,7 +123,7 @@ module.exports = ProjectView =
   findRootByPath: (rootPath) ->
     for root in @treeView.roots
       if rootPath is root.getPath()
-        return rootPath
+        return root
 
   clearRoots: ->
     roots = @treeView.roots
@@ -134,7 +138,8 @@ module.exports = ProjectView =
       delete root.directoryPath
     @projectMap = {}
 
-  updateProjectRoot: (root, name) ->
+  updateProjectRoot: (rootPath, name) ->
+    root = @findRootByPath(rootPath)
     if name?
       root.directoryName.textContent = name
       root.directoryName.classList.add('project-view')
