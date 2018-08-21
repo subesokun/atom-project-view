@@ -89,6 +89,14 @@ module.exports = ProjectView =
     @subscriptions.add atom.config.onDidChange 'project-view.regexSubStr', =>
       @regexSubStr = atom.config.get('project-view.regexSubStr')
       @updateRoots()
+    if @treeView.onDirectoryCreated
+      @subscriptions.add @treeView.onDirectoryCreated => process.nextTick => @updateRoots()
+    if @treeView.onEntryDeleted
+      @subscriptions.add @treeView.onEntryDeleted => process.nextTick => @updateRoots()
+    if @treeView.onEntryMoved
+      @subscriptions.add @treeView.onEntryMoved => process.nextTick => @updateRoots()
+    if @treeView.onFileCreated
+      @subscriptions.add @treeView.onFileCreated => process.nextTick => @updateRoots()
 
   updateRoots: ->
     roots = @treeView.roots
