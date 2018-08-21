@@ -3,7 +3,7 @@ fs = require 'fs-plus'
 path = require 'path'
 Project = require './project'
 
-isRoot = (x) -> x? x.matches '[is=tree-view-directory].project-root'
+isRoot = (x) -> x && x.matches '[is=tree-view-directory].project-root'
 rootNodes = (x) -> Array.from(x).filter(isRoot)
 
 module.exports = ProjectView =
