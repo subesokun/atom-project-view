@@ -3,6 +3,8 @@ fs = require 'fs-plus'
 path = require 'path'
 Project = require './project'
 
+isRoot = (x) -> x && x.matches '[is=tree-view-directory].project-root'
+rootNodes = (x) -> Array.from(x).filter(isRoot)
 
 module.exports = ProjectView =
   config:
@@ -38,6 +40,14 @@ module.exports = ProjectView =
         atom.config.set('project-view.displayPath', !atom.config.get('project-view.displayPath'))
     }))
 
+    @observer = new MutationObserver((mutations) =>
+      added = []
+      added.push.apply added, rootNodes(m.addedNodes) for m in mutations
+      if added.length > 0
+        process.nextTick => @updateRoots()
+    )
+
+
   initProjectView: ->
     if not @treeView?
       if atom.packages.getActivePackage('nuclide-tree-view')?
@@ -58,6 +68,7 @@ module.exports = ProjectView =
         @updateRoots(@treeView.roots)
 
   deactivate: ->
+    @observer.disconnect()
     @subscriptions?.dispose()
     if @treeView?
       @clearRoots()
@@ -89,6 +100,7 @@ module.exports = ProjectView =
     @subscriptions.add atom.config.onDidChange 'project-view.regexSubStr', =>
       @regexSubStr = atom.config.get('project-view.regexSubStr')
       @updateRoots()
+    @observer.observe(@treeView.list, { childList: true });
 
   updateRoots: ->
     roots = @treeView.roots
