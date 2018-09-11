@@ -28,25 +28,23 @@ module.exports = ProjectView =
     @subscriptions = new CompositeDisposable
     @subscriptions.add atom.packages.onDidActivateInitialPackages =>
       @initProjectView()
-    # Workaround for the isse that "onDidActivateInitialPackages" never gets
-    # fired if one or more packages are failing to initialize
-    @activateInterval = setInterval (=>
-        @initProjectView()
-      ), 1000
-    @initProjectView()
-
-    @subscriptions.add(atom.commands.add('atom-workspace', {
-      'project-view:toggle-path': ->
-        atom.config.set('project-view.displayPath', !atom.config.get('project-view.displayPath'))
-    }))
-
+    # Bind DOM mutation observer
     @observer = new MutationObserver((mutations) =>
       added = []
       added.push.apply added, rootNodes(m.addedNodes) for m in mutations
       if added.length > 0
         process.nextTick => @updateRoots()
     )
-
+    # Workaround for the isse that "onDidActivateInitialPackages" never gets
+    # fired if one or more packages are failing to initialize
+    @activateInterval = setInterval (=>
+        @initProjectView()
+      ), 1000
+    @initProjectView()
+    @subscriptions.add(atom.commands.add('atom-workspace', {
+      'project-view:toggle-path': ->
+        atom.config.set('project-view.displayPath', !atom.config.get('project-view.displayPath'))
+    }))
 
   initProjectView: ->
     if not @treeView?
@@ -68,7 +66,7 @@ module.exports = ProjectView =
         @updateRoots(@treeView.roots)
 
   deactivate: ->
-    @observer.disconnect()
+    @observer?.disconnect()
     @subscriptions?.dispose()
     if @treeView?
       @clearRoots()
@@ -103,6 +101,8 @@ module.exports = ProjectView =
     @observer.observe(@treeView.list, { childList: true });
 
   updateRoots: ->
+    if not @treeView?
+      return
     roots = @treeView.roots
     for root in roots
       rootPath = root.getPath()
