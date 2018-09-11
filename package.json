@@ -1,7 +1,7 @@
 {
   "name": "project-view",
   "main": "./lib/project-view",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "Show project details in the Atom tree-view",
   "repository": "https://github.com/subesokun/atom-project-view",
   "license": "MIT",
