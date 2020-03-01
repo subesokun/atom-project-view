@@ -4,7 +4,7 @@
 [![Downloads](https://img.shields.io/apm/dm/project-view.svg?style=flat-square)](https://atom.io/packages/project-view)
 [![Status Linux & OSX](https://img.shields.io/travis/subesokun/atom-project-view.svg?style=flat-square&label=Linux%20%26%20OSX)](https://travis-ci.org/subesokun/atom-project-view)
 [![Status Windows](https://img.shields.io/appveyor/ci/subesokun/atom-project-view.svg?style=flat-square&label=Windows)](https://ci.appveyor.com/project/subesokun/atom-project-view)
-[![Dependency Status](https://img.shields.io/david/subesokun/atom-project-view.svg?style=flat-square)](https://david-dm.org/subesokun/atom-project-view) [![NSP Status](https://nodesecurity.io/orgs/subesokun/projects/3b49f7ce-856a-428e-9158-2f89328bfb13/badge)](https://nodesecurity.io/orgs/subesokun/projects/3b49f7ce-856a-428e-9158-2f89328bfb13)
+[![Dependency Status](https://img.shields.io/david/subesokun/atom-project-view.svg?style=flat-square)](https://david-dm.org/subesokun/atom-project-view)
 
 Shows project details in the Atom tree-view.
 
