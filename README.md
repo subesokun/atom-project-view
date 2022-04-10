@@ -2,7 +2,7 @@
 
 [![Version](https://img.shields.io/apm/v/project-view.svg)](https://atom.io/packages/project-view)
 [![Downloads](https://img.shields.io/apm/dm/project-view.svg)](https://atom.io/packages/project-view)
-[![CI](https://github.com/atom-project-view/actions/workflows/main.yml/badge.svg)](https://github.com/atom-project-view/actions/workflows/main.yml)
+[![CI](https://github.com/subesokun/atom-project-view/actions/workflows/main.yml/badge.svg)](https://github.com/subesokun/atom-project-view/actions/workflows/main.yml)
 
 
 Shows project details in the Atom tree-view.
