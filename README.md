@@ -1,9 +1,9 @@
 # Project View package
 
+> This project is no longer maintained as Atom and all repositories under Atom will be archived on December 15, 2022. Learn more in the [official announcement](https://github.blog/2022-06-08-sunsetting-atom/). Thank you for your interest in this project and your support!
+
 [![Version](https://img.shields.io/apm/v/project-view.svg)](https://atom.io/packages/project-view)
 [![Downloads](https://img.shields.io/apm/dm/project-view.svg)](https://atom.io/packages/project-view)
-[![CI](https://github.com/subesokun/atom-project-view/actions/workflows/main.yml/badge.svg)](https://github.com/subesokun/atom-project-view/actions/workflows/main.yml)
-
 
 Shows project details in the Atom tree-view.
 
